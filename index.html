@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ZEXI TOOL | Master Admin Panel</title>
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* ==================================
+           1. MODERN CSS VARIABLES & ROOT
+           ================================== */
+        :root {
+            /* ===== UI ENHANCEMENT START: PREMIUM COLOR THEME ===== */
+            --bg-dark: #090614;        /* Deep Cyber Purple/Black */
+            --surface: rgba(28, 17, 48, 0.65); /* Glass Purple */
+            --surface-light: rgba(45, 27, 78, 0.8);  
+            --border: rgba(147, 51, 234, 0.3); /* Purple border */
+            --accent: #ffb703;         /* Neon Yellow */
+            --accent-glow: rgba(255, 183, 3, 0.4);
+            --danger: #ef4444;
+            --danger-glow: rgba(239, 68, 68, 0.3);
+            --success: #10b981;
+            --success-glow: rgba(16, 185, 129, 0.3);
+            --text-main: #ffffff;      /* Pure White */
+            --text-muted: #a78bfa;     /* Soft Purple White */
+            --radius: 16px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            
+            --sidebar-width: 280px;
+            --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+            /* ===== UI ENHANCEMENT END ===== */
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body { 
+            font-family: 'Rajdhani', sans-serif; 
+            background: linear-gradient(135deg, #090614 0%, #000000 100%);
+            color: var(--text-main); 
+            -webkit-font-smoothing: antialiased;
+            /* ===== UI ENHANCEMENT START: FLEX LAYOUT ===== */
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+            /* ===== UI ENHANCEMENT END ===== */
+        }
+
+        /* ===== UI ENHANCEMENT START: SIDEBAR & MAIN WRAPPER ===== */
+        .sidebar-wrapper {
+            width: var(--sidebar-width);
+            background: rgba(15, 9, 28, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            z-index: 200;
+        }
+
+        .main-wrapper {
+            flex: 1;
+            height: 100vh;
+            overflow-y: auto;
+            position: relative;
+        }
+        
+        .glass-panel {
+            background: var(--surface);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--border);
+            box-shadow: var(--glass-shadow);
+        }
+        /* ===== UI ENHANCEMENT END ===== */
+
+        .container { 
+            max-width: 1200px; 
+            margin: 0 auto; 
+            padding: 30px; 
+        }
+
+        /* ==================================
+           2. GLASSMORPHISM HEADER
+           ================================== */
+        .admin-header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            /* ===== UI ENHANCEMENT START: UPDATED HEADER AS TOPBAR ===== */
+            background: rgba(9, 6, 20, 0.8);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--border);
+            padding: 15px 30px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            /* ===== UI ENHANCEMENT END ===== */
+        }
+
+        .admin-header h1 { 
+            color: var(--accent); 
+            font-size: 1.8rem; 
+            letter-spacing: 2px; 
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-shadow: 0 0 15px var(--accent-glow);
+        }
+        .admin-header h1 span { color: var(--text-main); font-weight: 500; text-shadow: none; }
+
+        h2 { font-size: 1.5rem; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; color: var(--text-main); }
+        h2 i { color: var(--accent); }
+        h3 { font-size: 1.1rem; margin: 30px 0 15px 0; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
+
+        /* ==================================
+           3. STATS CARDS (GRID)
+           ================================== */
+        .stats-container { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
+            gap: 20px; 
+            margin-bottom: 30px; 
+        }
+        
+        .stat-card { 
+            background: var(--surface);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--border); 
+            padding: 24px; 
+            border-radius: var(--radius); 
+            position: relative;
+            overflow: hidden;
+            transition: var(--transition);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+        }
+        
+        .stat-card:hover { 
+            transform: translateY(-5px); 
+            border-color: var(--accent); 
+            box-shadow: 0 15px 30px rgba(147, 51, 234, 0.3); 
+        }
+
+        .stat-card h3 { margin: 0 0 15px 0; color: var(--text-muted); font-size: 0.9rem; display: flex; align-items: center; gap: 8px; text-transform: uppercase; letter-spacing: 1px;}
+        .stat-card h3 i { font-size: 1.3rem; color: var(--accent); }
+        .stat-card .value { font-size: 3.2rem; font-weight: 700; margin: 0; line-height: 1; position: relative; z-index: 2; }
+        
+        .val-total { color: var(--text-main); }
+        .val-active { color: var(--success); text-shadow: 0 0 20px var(--success-glow); }
+        .val-banned { color: var(--danger); text-shadow: 0 0 20px var(--danger-glow); }
+        
+        .stat-card::after {
+            content: ''; position: absolute; top: -20px; right: -20px; width: 120px; height: 120px;
+            background: var(--accent); filter: blur(80px); opacity: 0.1; border-radius: 50%; z-index: 1;
+        }
+
+        /* ===== UI ENHANCEMENT START: PROGRESS BARS ===== */
+        .stat-progress-bg { width: 100%; height: 6px; background: rgba(255,255,255,0.05); border-radius: 10px; margin-top: 20px; overflow: hidden; }
+        .stat-progress-fill { height: 100%; border-radius: 10px; background: var(--accent); box-shadow: 0 0 10px var(--accent-glow); animation: loadBar 1.5s ease-out forwards;}
+        @keyframes loadBar { from { width: 0; } }
+        /* ===== UI ENHANCEMENT END ===== */
+
+        /* ==================================
+           4. PILL-STYLE TABS NAVIGATION (MOVED TO SIDEBAR CSS)
+           ================================== */
+        .tabs { 
+            display: flex; gap: 12px; margin-bottom: 30px; overflow-x: auto; 
+            padding-bottom: 8px; scrollbar-width: none; 
+            /* ===== UI ENHANCEMENT START: SIDEBAR TAB LAYOUT ===== */
+            flex-direction: column;
+            padding: 0 20px;
+            margin-top: 10px;
+            /* ===== UI ENHANCEMENT END ===== */
+        }
+        .tabs::-webkit-scrollbar { display: none; }
+        
+        .tab-btn { 
+            flex: 0 0 auto; padding: 16px 20px; background: transparent; color: var(--text-muted); 
+            border: 1px solid transparent; cursor: pointer; font-weight: 700; font-size: 1rem; 
+            border-radius: 12px; transition: var(--transition); text-transform: uppercase; 
+            letter-spacing: 0.5px; display: flex; align-items: center; gap: 12px;
+            /* ===== UI ENHANCEMENT START ===== */
+            justify-content: flex-start;
+            /* ===== UI ENHANCEMENT END ===== */
+        }
+        .tab-btn:hover { background: var(--surface-light); color: var(--text-main); transform: translateX(5px); }
+        .tab-btn.active { 
+            background: rgba(147, 51, 234, 0.2); color: var(--accent); 
+            border-color: var(--border); box-shadow: 0 4px 15px rgba(147, 51, 234, 0.2); 
+            border-left: 4px solid var(--accent);
+        }
+        
+        /* ==================================
+           5. SECTION ANIMATIONS
+           ================================== */
+        .section { display: none; animation: fadeSlideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+        .section.active { display: block; }
+        @keyframes fadeSlideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ===== UI ENHANCEMENT START: TOOLS ROW (SEARCH/EXPORT) ===== */
+        .ui-tools-row {
+            display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;
+            gap: 15px; margin-bottom: 20px; background: var(--surface); padding: 15px 20px;
+            border-radius: var(--radius); border: 1px solid var(--border); box-shadow: var(--glass-shadow);
+        }
+        .ui-search { position: relative; width: 100%; max-width: 350px; }
+        .ui-search i { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--accent); }
+        .ui-search input { padding-left: 45px; background: rgba(0,0,0,0.3); border: 1px solid var(--border); margin: 0; }
+        /* ===== UI ENHANCEMENT END ===== */
+
+        /* ==================================
+           6. BUTTONS & INPUTS
+           ================================== */
+        button { 
+            display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+            padding: 10px 18px; background: var(--accent); color: #000; border: none; 
+            border-radius: 8px; font-weight: 700; font-family: inherit; font-size: 0.9rem; 
+            cursor: pointer; transition: var(--transition); text-transform: uppercase; 
+            letter-spacing: 0.5px; box-shadow: 0 4px 12px var(--accent-glow);
+        }
+        button:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(255, 183, 3, 0.4); filter: brightness(1.1);}
+        button:active { transform: translateY(0); }
+        
+        .btn-success { background: rgba(16, 185, 129, 0.15); color: var(--success); border: 1px solid var(--success); box-shadow: none; }
+        .btn-success:hover { background: var(--success); color: #000; box-shadow: 0 4px 15px var(--success-glow); }
+        
+        .btn-danger { background: rgba(239, 68, 68, 0.15); color: var(--danger); border: 1px solid var(--danger); box-shadow: none; }
+        .btn-danger:hover { background: var(--danger); color: #fff; box-shadow: 0 4px 15px var(--danger-glow); }
+        
+        .btn-outline { background: transparent; border: 1px solid var(--accent); color: var(--accent); box-shadow: none; }
+        .btn-outline:hover { background: var(--accent); color: #000; box-shadow: 0 4px 15px var(--accent-glow); }
+
+        /* ===== UI ENHANCEMENT START: ICON BUTTONS ===== */
+        .btn-icon-small { padding: 6px; font-size: 0.8rem; border-radius: 6px; background: rgba(255,255,255,0.05); color: var(--text-muted); border: 1px solid var(--border); box-shadow: none;}
+        .btn-icon-small:hover { background: var(--accent); color: #000; }
+        /* ===== UI ENHANCEMENT END ===== */
+        
+        .btn-block { width: 100%; }
+        .btn-large { padding: 16px; font-size: 1.1rem; }
+
+        input, select { 
+            width: 100%; padding: 14px 18px; background: rgba(0,0,0,0.3); border: 1px solid var(--border); 
+            color: var(--text-main); border-radius: 10px; font-family: inherit; font-size: 0.95rem; 
+            transition: var(--transition); 
+        }
+        input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow); background: rgba(0,0,0,0.5); }
+        input::placeholder { color: #6b7280; }
+        
+        /* ==================================
+           7. FORM GRID WRAPPER
+           ================================== */
+        .form-wrapper {
+            background: var(--surface); padding: 30px; border-radius: var(--radius);
+            border: 1px solid var(--border); margin-bottom: 30px; box-shadow: var(--glass-shadow);
+        }
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 24px; margin-bottom: 24px; }
+        .form-group label { display: block; margin-bottom: 10px; color: var(--text-muted); font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+
+        /* ==================================
+           8. BADGES & CODE BLOCKS
+           ================================== */
+        .badge { 
+            display: inline-block; padding: 6px 12px; border-radius: 8px; font-size: 0.75rem; 
+            font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; 
+        }
+        .badge.banned { background: rgba(239, 68, 68, 0.2); color: #fca5a5; border: 1px solid var(--danger); box-shadow: 0 0 10px rgba(239, 68, 68, 0.2); }
+        .badge.active { background: rgba(16, 185, 129, 0.2); color: #6ee7b7; border: 1px solid var(--success); box-shadow: 0 0 10px rgba(16, 185, 129, 0.2); }
+
+        code {
+            background: rgba(0, 0, 0, 0.4) !important; padding: 6px 10px !important; 
+            border-radius: 6px; font-family: 'Courier New', monospace; color: var(--accent); 
+            border: 1px solid rgba(255, 255, 255, 0.1); font-weight: bold; letter-spacing: 1px;
+        }
+
+        /* ==================================
+           9. RESPONSIVE TABLES (DESKTOP)
+           ================================== */
+        .table-container { width: 100%; overflow-x: auto; border-radius: var(--radius); border: 1px solid var(--border); box-shadow: var(--glass-shadow); }
+        table { width: 100%; border-collapse: separate; border-spacing: 0; background: var(--surface); }
+        th, td { padding: 18px; text-align: left; border-bottom: 1px solid var(--border); vertical-align: middle; }
+        th { 
+            background: rgba(0,0,0,0.3); color: var(--text-muted); font-size: 0.85rem; 
+            font-weight: 700; text-transform: uppercase; letter-spacing: 1px; 
+        }
+        td { color: #e4e4e7; font-size: 0.95rem; }
+        tr:last-child td { border-bottom: none; }
+        tbody tr { transition: var(--transition); }
+        tbody tr:hover { background: rgba(147, 51, 234, 0.1); } /* Purple hover highlight */
+
+        /* Actions Cell alignment */
+        .actions-cell { display: flex; gap: 10px; flex-wrap: wrap; }
+
+        /* ===== UI ENHANCEMENT START: TOAST & MODAL UI ===== */
+        #ui-toast-container { position: fixed; bottom: 30px; right: 30px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; }
+        .ui-toast {
+            background: rgba(15, 9, 28, 0.95); border-left: 4px solid var(--accent); color: #fff;
+            padding: 16px 24px; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            display: flex; align-items: center; gap: 12px; font-weight: 600;
+            backdrop-filter: blur(10px); border: 1px solid var(--border); border-left: 4px solid var(--accent);
+            animation: slideInRight 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+        @keyframes slideInRight { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
+        .ui-modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8); backdrop-filter: blur(8px); z-index: 3000;
+            display: none; justify-content: center; align-items: center; opacity: 0; transition: opacity 0.3s;
+        }
+        .ui-modal-overlay.show { display: flex; opacity: 1; }
+        .ui-modal-box { width: 90%; max-width: 450px; padding: 30px; transform: scale(0.9); transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .ui-modal-overlay.show .ui-modal-box { transform: scale(1); }
+        .ui-modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; padding-bottom: 15px; border-bottom: 1px solid var(--border);}
+        .ui-modal-header h3 { color: var(--accent); font-size: 1.3rem; margin: 0; }
+        .ui-modal-body { color: var(--text-main); font-size: 1.05rem; line-height: 1.8; }
+        .ui-modal-body strong { color: var(--text-muted); }
+        /* ===== UI ENHANCEMENT END ===== */
+
+        /* ==================================
+           10. RESPONSIVE TABLES (MOBILE CARDS)
+           ================================== */
+        @media (max-width: 800px) {
+            body { flex-direction: column; }
+            .sidebar-wrapper { width: 100%; height: auto; border-right: none; border-bottom: 1px solid var(--border); padding-bottom: 0;}
+            .sidebar-brand { display: none; /* Hide brand in mobile, keep topbar */ }
+            .tabs { flex-direction: row; overflow-x: auto; padding: 10px; margin: 0; }
+            .tab-btn { padding: 12px 16px; font-size: 0.85rem; white-space: nowrap; }
+            
+            .table-container { border: none; overflow: visible; background: transparent; box-shadow: none; }
+            table, thead, tbody, th, td, tr { display: block; }
+            thead { display: none; }
+            
+            tr { 
+                background: var(--surface); border: 1px solid var(--border); 
+                border-radius: var(--radius); margin-bottom: 1.5rem; padding: 1.2rem; 
+                box-shadow: 0 4px 15px rgba(0,0,0,0.3); 
+            }
+            
+            td { 
+                display: flex; flex-direction: column; align-items: flex-start; 
+                padding: 0.8rem 0; border: none; border-bottom: 1px solid rgba(255,255,255,0.05); 
+            }
+            td:last-child { border-bottom: none; padding-bottom: 0; }
+            
+            /* Button rows inside mobile cards */
+            td:last-child { flex-direction: row; flex-wrap: wrap; gap: 10px; }
+            td:last-child button { flex: 1; width: 100%; }
+
+            /* Loading state handling */
+            td[colspan] { text-align: center !important; align-items: center; justify-content: center; border: none; }
+            td[colspan]::before { display: none !important; }
+
+            /* Inject Labels dynamically via CSS */
+            td::before { 
+                display: block; font-size: 0.75rem; color: var(--text-muted); 
+                text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; font-weight: 700; 
+            }
+
+            /* Map Labels: Deposit Table */
+            #deposit-list td:nth-child(1)::before { content: "User Email / UID"; }
+            #deposit-list td:nth-child(2)::before { content: "Method"; }
+            #deposit-list td:nth-child(3)::before { content: "Amount"; }
+            #deposit-list td:nth-child(4)::before { content: "Transaction / Order ID"; }
+            #deposit-list td:nth-child(5)::before { content: "Actions"; }
+
+            /* Map Labels: Order Table */
+            #order-list td:nth-child(1)::before { content: "User Details"; }
+            #order-list td:nth-child(2)::before { content: "Product & Duration"; }
+            #order-list td:nth-child(3)::before { content: "Paid (Wallet)"; }
+            #order-list td:nth-child(4)::before { content: "Enter Key"; }
+            #order-list td:nth-child(5)::before { content: "Action"; }
+
+            /* Map Labels: Product Table */
+            #product-list td:nth-child(1)::before { content: "Product Name"; }
+            #product-list td:nth-child(2)::before { content: "Prices (1/7/15/30)"; }
+            #product-list td:nth-child(3)::before { content: "Video Attached"; }
+            #product-list td:nth-child(4)::before { content: "Actions"; }
+
+            /* Map Labels: User Table */
+            #user-list td:nth-child(1)::before { content: "User Email / UID"; }
+            #user-list td:nth-child(2)::before { content: "Wallet Balance"; }
+            #user-list td:nth-child(3)::before { content: "Account Status"; }
+            #user-list td:nth-child(4)::before { content: "Wallet Control"; }
+            #user-list td:nth-child(5)::before { content: "Ban / Delete"; }
+        }
+    </style>
+</head>
+<body>
+
+<aside class="sidebar-wrapper">
+    <div class="sidebar-brand">
+        <h1 style="color: var(--accent); font-size: 1.6rem; text-align: center; padding: 25px 0; border-bottom: 1px solid var(--border); text-shadow: 0 0 15px var(--accent-glow);">
+            <i class="fa-solid fa-shield-halved"></i> ZEXISTEY<span style="color: #fff; font-weight: 500;">ADMIN</span>
+        </h1>
+    </div>
+    
+    <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('tab-deposits')"><i class="fa-solid fa-money-bill-transfer"></i> Deposits</button>
+        <button class="tab-btn" onclick="switchTab('tab-orders')"><i class="fa-solid fa-key"></i> Orders & Keys</button>
+        <button class="tab-btn" onclick="switchTab('tab-products')"><i class="fa-solid fa-store"></i> Store Manager</button>
+        <button class="tab-btn" onclick="switchTab('tab-users')"><i class="fa-solid fa-users-gear"></i> User Control</button>
+    </div>
+</aside>
+
+<div class="main-wrapper">
+<header class="admin-header">
+    <h2><i class="fa-solid fa-bolt"></i> ZEXI TOOL OVERVIEW</h2>
+    <div style="display: flex; gap: 15px; align-items: center;">
+        <span class="badge active"><i class="fa-solid fa-circle-dot"></i> System Online</span>
+        <div style="width: 40px; height: 40px; background: var(--surface-light); border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 1px solid var(--accent); color: var(--accent);"><i class="fa-solid fa-user-tie"></i></div>
+    </div>
+    </header>
+
+<main class="container">
+    
+    <div class="stats-container">
+        <div class="stat-card">
+            <h3><i class="fa-solid fa-users"></i> Total Players</h3>
+            <p class="value val-total" id="stat-total">0</p>
+            <div class="stat-progress-bg"><div class="stat-progress-fill" style="width: 100%; background: var(--text-muted);"></div></div>
+            </div>
+        <div class="stat-card">
+            <h3><i class="fa-solid fa-user-check"></i> Active Players</h3>
+            <p class="value val-active" id="stat-active">0</p>
+            <div class="stat-progress-bg"><div class="stat-progress-fill" style="width: 85%; background: var(--success);"></div></div>
+            </div>
+        <div class="stat-card">
+            <h3><i class="fa-solid fa-user-slash"></i> Banned Players</h3>
+            <p class="value val-banned" id="stat-banned">0</p>
+            <div class="stat-progress-bg"><div class="stat-progress-fill" style="width: 15%; background: var(--danger);"></div></div>
+            </div>
+    </div>
+
+    <div id="tab-deposits" class="section active">
+        <h2><i class="fa-solid fa-bell"></i> Pending Deposit Requests</h2>
+        <div class="ui-tools-row">
+            <div class="ui-search">
+                <i class="fa-solid fa-search"></i>
+                <input type="text" placeholder="Search by UID, Email, or UTR..." onkeyup="uiFilterTable(this, 'deposit-list')">
+            </div>
+            <button class="btn-outline" onclick="uiExportCSV('deposit-list', 'Pending_Deposits')"><i class="fa-solid fa-file-csv"></i> Export Data</button>
+        </div>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>User Email / UID</th>
+                        <th>Method</th>
+                        <th>Amount</th>
+                        <th>Transaction / Order ID</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="deposit-list"><tr><td colspan="5" style="text-align:center;">Loading data...</td></tr></tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="tab-orders" class="section">
+        <h2><i class="fa-solid fa-truck-fast"></i> Pending Orders (Deliver Keys)</h2>
+        <div class="ui-tools-row">
+            <div class="ui-search">
+                <i class="fa-solid fa-search"></i>
+                <input type="text" placeholder="Search by Product or Email..." onkeyup="uiFilterTable(this, 'order-list')">
+            </div>
+            <button class="btn-outline" onclick="uiExportCSV('order-list', 'Pending_Orders')"><i class="fa-solid fa-file-csv"></i> Export Data</button>
+        </div>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>User Details</th>
+                        <th>Product & Duration</th>
+                        <th>Paid (Wallet)</th>
+                        <th>Enter Key</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="order-list"><tr><td colspan="5" style="text-align:center;">Loading data...</td></tr></tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="tab-products" class="section">
+        <h2><i class="fa-solid fa-box-open"></i> Add / Edit Products</h2>
+        
+        <div class="form-wrapper">
+            <input type="hidden" id="prod-id">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Product Name</label>
+                    <input type="text" id="prod-name" placeholder="e.g. ZEXI VIP INJECTOR">
+                </div>
+                <div class="form-group">
+                    <label>Video URL (.mp4 Link)</label>
+                    <input type="text" id="prod-video" placeholder="https://your-video-link.mp4">
+                </div>
+                <div class="form-group"><label>1 Day Price (₹)</label><input type="number" id="prod-1" placeholder="e.g. 99"></div>
+                <div class="form-group"><label>7 Days Price (₹)</label><input type="number" id="prod-7" placeholder="e.g. 299"></div>
+                <div class="form-group"><label>15 Days Price (₹)</label><input type="number" id="prod-15" placeholder="e.g. 599"></div>
+                <div class="form-group"><label>30 Days Price (₹)</label><input type="number" id="prod-30" placeholder="e.g. 999"></div>
+            </div>
+            <button id="btn-save-prod" class="btn-block btn-large" onclick="saveProduct()">
+                <i class="fa-solid fa-cloud-arrow-up"></i> SAVE PRODUCT TO STORE
+            </button>
+        </div>
+
+        <h3>Current Store Products</h3>
+        <div class="ui-tools-row">
+            <div class="ui-search">
+                <i class="fa-solid fa-search"></i>
+                <input type="text" placeholder="Search Store Products..." onkeyup="uiFilterTable(this, 'product-list')">
+            </div>
+        </div>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Product Name</th>
+                        <th>Prices (1/7/15/30)</th>
+                        <th>Video Attached</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="product-list"><tr><td colspan="4" style="text-align:center;">Loading data...</td></tr></tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="tab-users" class="section">
+        <h2><i class="fa-solid fa-user-shield"></i> Manage Players & Wallets</h2>
+        <div class="ui-tools-row">
+            <div class="ui-search">
+                <i class="fa-solid fa-search"></i>
+                <input type="text" placeholder="Search Players by Email or UID..." onkeyup="uiFilterTable(this, 'user-list')">
+            </div>
+            <button class="btn-outline" onclick="uiExportCSV('user-list', 'All_Players')"><i class="fa-solid fa-file-csv"></i> Export Data</button>
+        </div>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>User Email / UID</th>
+                        <th>Current Wallet Balance</th>
+                        <th>Account Status</th>
+                        <th>Wallet Control (+ / -)</th>
+                        <th>Ban / Delete</th>
+                    </tr>
+                </thead>
+                <tbody id="user-list"><tr><td colspan="5" style="text-align:center;">Loading data...</td></tr></tbody>
+            </table>
+        </div>
+    </div>
+
+</main>
+
+</div> <div id="ui-toast-container"></div>
+
+<div class="ui-modal-overlay" id="ui-global-modal">
+    <div class="ui-modal-box glass-panel">
+        <div class="ui-modal-header">
+            <h3 id="ui-modal-title">Details</h3>
+            <button class="btn-icon-small" onclick="uiCloseModal()"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="ui-modal-body" id="ui-modal-content"></div>
+    </div>
+</div>
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+    import { 
+        getFirestore, collection, onSnapshot, query, where, updateDoc, doc, increment, addDoc, deleteDoc
+    } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyA1gJbICweCK_K5xQQK6iIrfEWfwqatytU",
+        authDomain: "hackmode-2e1b1.firebaseapp.com",
+        projectId: "hackmode-2e1b1",
+        storageBucket: "hackmode-2e1b1.firebasestorage.app",
+        messagingSenderId: "961579533174",
+        appId: "1:961579533174:web:f59b6a7e1bf7616aed7057"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // --- TAB SWITCHER ---
+    window.switchTab = function(tabId) {
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(tabId).classList.add('active');
+        event.currentTarget.classList.add('active');
+    };
+
+    // ==========================================
+    // ===== UI ENHANCEMENT START: HELPER JS =====
+    // ==========================================
+    // 1. Toast Notification System (Overrides Alert Safely)
+    window.uiShowToast = function(msg) {
+        const container = document.getElementById('ui-toast-container');
+        const toast = document.createElement('div');
+        toast.className = 'ui-toast';
+        toast.innerHTML = `<i class="fa-solid fa-circle-check" style="color:var(--accent); font-size: 1.2rem;"></i> <span>${msg}</span>`;
+        container.appendChild(toast);
+        setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => toast.remove(), 300); }, 3500);
+    };
+
+    const originalAlert = window.alert;
+    window.alert = function(msg) {
+        uiShowToast(msg);
+        // Using setTimeout ensures Toast renders before the blocking native alert triggers
+        setTimeout(() => { originalAlert(msg); }, 100); 
+    };
+
+    // 2. Safe DOM Filtering (Search)
+    window.uiFilterTable = function(inputElement, tableId) {
+        let filter = inputElement.value.toLowerCase();
+        let rows = document.getElementById(tableId).getElementsByTagName('tr');
+        for (let i = 0; i < rows.length; i++) {
+            let text = rows[i].textContent || rows[i].innerText;
+            rows[i].style.display = text.toLowerCase().indexOf(filter) > -1 ? "" : "none";
+        }
+    };
+
+    // 3. Copy to Clipboard
+    window.uiCopyText = function(text) {
+        navigator.clipboard.writeText(text);
+        uiShowToast("Copied to clipboard!");
+    };
+
+    // 4. Modal Triggers
+    window.uiOpenModal = function(title, contentHtml) {
+        document.getElementById('ui-modal-title').innerText = title;
+        document.getElementById('ui-modal-content').innerHTML = contentHtml;
+        document.getElementById('ui-global-modal').classList.add('show');
+    };
+    window.uiCloseModal = function() {
+        document.getElementById('ui-global-modal').classList.remove('show');
+    };
+
+    // 5. CSV Export (Frontend Only)
+    window.uiExportCSV = function(tableId, filename) {
+        let csv = [];
+        let rows = document.querySelectorAll(`#${tableId} tr`);
+        for (let i = 0; i < rows.length; i++) {
+            if(rows[i].style.display === "none") continue; // Export visible only
+            let row = [], cols = rows[i].querySelectorAll("td, th");
+            for (let j = 0; j < cols.length - 1; j++) row.push('"' + cols[j].innerText.replace(/"/g, '""') + '"');
+            csv.push(row.join(","));
+        }
+        let link = document.createElement("a");
+        link.href = 'data:text/csv;charset=utf-8,' + encodeURI(csv.join("\n"));
+        link.target = "_blank"; link.download = filename + ".csv"; link.click();
+        uiShowToast("Data Exported to CSV");
+    };
+    // ==========================================
+    // ===== UI ENHANCEMENT END: HELPER JS =======
+    // ==========================================
+
+
+    // ==========================================
+    // 1. DEPOSIT MANAGEMENT
+    // ==========================================
+    onSnapshot(query(collection(db, "deposits"), where("status", "==", "pending")), (snapshot) => {
+        let html = '';
+        snapshot.forEach((d) => {
+            const data = d.data();
+            html += `
+                <tr>
+                    <td>
+                        <strong style="color:var(--accent)">${data.email}</strong><br>
+                        <small style="color:var(--text-muted)">${data.uid}</small>
+                        <button class="btn-icon-small" style="margin-left:8px;" onclick="uiCopyText('${data.uid}')" title="Copy UID"><i class="fa-solid fa-copy"></i></button>
+                        </td>
+                    <td><span style="font-weight: 600; text-transform: uppercase;">${data.method}</span></td>
+                    <td style="color:var(--success); font-weight:bold; font-size:1.1rem;">₹${data.amount}</td>
+                    <td>
+                        <code>${data.utr}</code>
+                        <button class="btn-icon-small" style="margin-left:8px;" onclick="uiCopyText('${data.utr}')" title="Copy UTR"><i class="fa-solid fa-copy"></i></button>
+                        </td>
+                    <td class="actions-cell">
+                        <button class="btn-success" onclick="approveDeposit('${d.id}', '${data.uid}', ${data.amount})"><i class="fa-solid fa-check"></i> Approve</button>
+                        <button class="btn-danger" onclick="rejectDeposit('${d.id}')"><i class="fa-solid fa-xmark"></i> Reject</button>
+                        <button class="btn-outline btn-icon-small" style="padding: 10px;" onclick="uiOpenModal('Deposit Request Details', '<strong>Email:</strong> ${data.email}<br><strong>UID:</strong> ${data.uid}<br><strong>Method:</strong> ${data.method}<br><strong>Amount:</strong> ₹${data.amount}<br><strong>Transaction UTR:</strong> ${data.utr}')" title="View Details"><i class="fa-solid fa-eye"></i></button>
+                        </td>
+                </tr>`;
+        });
+        document.getElementById('deposit-list').innerHTML = html || '<tr><td colspan="5" style="text-align:center;">No pending deposits.</td></tr>';
+    });
+
+    window.approveDeposit = async (docId, uid, amount) => {
+        if(!confirm(`Approve this and add ₹${amount} to user's wallet?`)) return;
+        try {
+            await updateDoc(doc(db, "deposits", docId), { status: 'success' });
+            await updateDoc(doc(db, "users", uid), { balance: increment(amount) });
+            alert("Deposit Approved! User wallet updated.");
+        } catch(e) { alert("Error: " + e.message); }
+    };
+
+    window.rejectDeposit = async (docId) => {
+        if(!confirm("Reject this deposit request?")) return;
+        await updateDoc(doc(db, "deposits", docId), { status: 'failed' });
+    };
+
+    // ==========================================
+    // 2. ORDER MANAGEMENT (ADDED DELETE BUTTON)
+    // ==========================================
+    onSnapshot(query(collection(db, "orders"), where("status", "==", "pending")), (snapshot) => {
+        let html = '';
+        snapshot.forEach((d) => {
+            const data = d.data();
+            html += `
+                <tr>
+                    <td>
+                        <strong style="color:var(--accent)">${data.email}</strong><br>
+                        <small style="color:var(--text-muted)">${data.uid}</small>
+                        <button class="btn-icon-small" style="margin-left:8px;" onclick="uiCopyText('${data.uid}')" title="Copy UID"><i class="fa-solid fa-copy"></i></button>
+                        </td>
+                    <td><strong style="font-size: 1.05rem;">${data.productName}</strong><br><span style="color:var(--text-muted)">${data.duration}</span></td>
+                    <td style="color:var(--accent); font-weight: 700; font-size: 1.1rem;">₹${data.price}</td>
+                    <td><input type="text" id="key-${d.id}" placeholder="Enter generated key..."></td>
+                    <td class="actions-cell">
+                        <button onclick="deliverKey('${d.id}')"><i class="fa-solid fa-paper-plane"></i> Send Key</button>
+                        <button class="btn-danger" onclick="deleteOrder('${d.id}')" title="Delete Order"><i class="fa-solid fa-trash"></i></button>
+                        <button class="btn-outline btn-icon-small" style="padding: 10px;" onclick="uiOpenModal('Order Details', '<strong>User Email:</strong> ${data.email}<br><strong>Product:</strong> ${data.productName}<br><strong>Duration:</strong> ${data.duration}<br><strong>Amount Paid:</strong> ₹${data.price}')" title="View Details"><i class="fa-solid fa-eye"></i></button>
+                        </td>
+                </tr>`;
+        });
+        document.getElementById('order-list').innerHTML = html || '<tr><td colspan="5" style="text-align:center;">No pending orders.</td></tr>';
+    });
+
+    window.deliverKey = async (docId) => {
+        const keyVal = document.getElementById(`key-${docId}`).value;
+        if(!keyVal) return alert("Please enter the product key!");
+        try {
+            await updateDoc(doc(db, "orders", docId), { status: 'success', key: keyVal });
+            alert("Key Delivered successfully!");
+        } catch(e) { alert("Error: " + e.message); }
+    };
+
+    window.deleteOrder = async (docId) => {
+        if(!confirm("Are you sure you want to delete this order permanently?")) return;
+        try {
+            await deleteDoc(doc(db, "orders", docId));
+            alert("Order deleted successfully!");
+        } catch(e) { alert("Error: " + e.message); }
+    };
+
+    // ==========================================
+    // 3. STORE MANAGER
+    // ==========================================
+    onSnapshot(collection(db, "products"), (snapshot) => {
+        let html = '';
+        snapshot.forEach((d) => {
+            const data = d.data();
+            html += `
+                <tr>
+                    <td><strong style="color:var(--accent); font-size: 1.1rem;">${data.name}</strong></td>
+                    <td style="font-weight: 600;">₹${data.prices['1']} / ₹${data.prices['7']} / ₹${data.prices['15']} / ₹${data.prices['30']}</td>
+                    <td>${data.videoUrl !== '#' && data.videoUrl !== '' ? '<span style="color:var(--success); font-weight:700;"><i class="fa-solid fa-video"></i> Yes</span>' : '<span style="color:var(--danger); font-weight:700;"><i class="fa-solid fa-video-slash"></i> No Video</span>'}</td>
+                    <td class="actions-cell">
+                        <button class="btn-outline" onclick='editProduct("${d.id}", ${JSON.stringify(data)})'><i class="fa-solid fa-pen-to-square"></i> Edit</button>
+                        <button class="btn-danger" onclick="deleteProduct('${d.id}')"><i class="fa-solid fa-trash"></i> Drop</button>
+                    </td>
+                </tr>`;
+        });
+        document.getElementById('product-list').innerHTML = html || '<tr><td colspan="4" style="text-align:center;">Store is empty. Add products above.</td></tr>';
+    });
+
+    window.saveProduct = async () => {
+        const id = document.getElementById('prod-id').value;
+        const name = document.getElementById('prod-name').value;
+        const video = document.getElementById('prod-video').value || "#";
+        const p1 = document.getElementById('prod-1').value;
+        const p7 = document.getElementById('prod-7').value;
+        const p15 = document.getElementById('prod-15').value;
+        const p30 = document.getElementById('prod-30').value;
+
+        if(!name || !p1 || !p7 || !p15 || !p30) return alert("Fill Product Name and all 4 Prices!");
+
+        const productData = {
+            name: name, videoUrl: video,
+            prices: { "1": Number(p1), "7": Number(p7), "15": Number(p15), "30": Number(p30) }
+        };
+
+        try {
+            if(id) {
+                await updateDoc(doc(db, "products", id), productData); 
+                alert("Product Updated!");
+            } else {
+                await addDoc(collection(db, "products"), productData); 
+                alert("New Product Added!");
+            }
+            document.querySelectorAll('#tab-products input').forEach(inp => inp.value = ''); 
+            document.getElementById('btn-save-prod').innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> SAVE PRODUCT TO STORE';
+        } catch(e) { alert("Error: " + e.message); }
+    };
+
+    window.editProduct = (id, data) => {
+        document.getElementById('prod-id').value = id;
+        document.getElementById('prod-name').value = data.name;
+        document.getElementById('prod-video').value = data.videoUrl === "#" ? "" : data.videoUrl;
+        document.getElementById('prod-1').value = data.prices['1'];
+        document.getElementById('prod-7').value = data.prices['7'];
+        document.getElementById('prod-15').value = data.prices['15'];
+        document.getElementById('prod-30').value = data.prices['30'];
+        document.getElementById('btn-save-prod').innerHTML = '<i class="fa-solid fa-wrench"></i> UPDATE EXISTING PRODUCT';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    window.deleteProduct = async (id) => {
+        if(confirm("Delete this product permanently from the store?")) {
+            await deleteDoc(doc(db, "products", id));
+        }
+    };
+
+    // ==========================================
+    // 4. USER MANAGEMENT & LIVE COUNTERS (ADDED DELETE USER)
+    // ==========================================
+    onSnapshot(collection(db, "users"), (snapshot) => {
+        let html = '';
+        let totalCount = 0;
+        let activeCount = 0;
+        let bannedCount = 0;
+
+        snapshot.forEach((d) => {
+            const data = d.data();
+            const isBanned = data.isBanned || false;
+            
+            totalCount++;
+            if(isBanned) bannedCount++;
+            else activeCount++;
+
+            const statusBadge = isBanned ? '<span class="badge banned">BANNED</span>' : '<span class="badge active">ACTIVE</span>';
+            const banBtnText = isBanned ? '<i class="fa-solid fa-unlock"></i> Unban' : '<i class="fa-solid fa-ban"></i> Ban Player';
+            const banBtnClass = isBanned ? 'btn-success' : 'btn-danger';
+
+            html += `
+                <tr>
+                    <td>
+                        <strong style="color:var(--accent)">${data.email}</strong><br>
+                        <small style="color:var(--text-muted)">${d.id}</small>
+                        <button class="btn-icon-small" style="margin-left:8px;" onclick="uiCopyText('${d.id}')" title="Copy UID"><i class="fa-solid fa-copy"></i></button>
+                        </td>
+                    <td style="font-size:1.2rem; font-weight:700;">₹${data.balance || 0}</td>
+                    <td>${statusBadge}</td>
+                    <td class="actions-cell">
+                        <button class="btn-success" onclick="adjustWallet('${d.id}', 'add')" title="Add Funds"><i class="fa-solid fa-plus"></i> Add</button>
+                        <button class="btn-danger" onclick="adjustWallet('${d.id}', 'minus')" title="Deduct Funds"><i class="fa-solid fa-minus"></i> Minus</button>
+                    </td>
+                    <td class="actions-cell">
+                        <button class="${banBtnClass}" onclick="toggleBan('${d.id}', ${isBanned})">${banBtnText}</button>
+                        <button class="btn-danger" onclick="deleteUser('${d.id}')" title="Delete User Permanently"><i class="fa-solid fa-user-xmark"></i></button>
+                        <button class="btn-outline btn-icon-small" style="padding: 10px;" onclick="uiOpenModal('Player Profile', '<strong>Account Email:</strong> ${data.email}<br><strong>System UID:</strong> ${d.id}<br><strong>Wallet Balance:</strong> ₹${data.balance || 0}<br><strong>Status:</strong> ${isBanned ? 'Banned' : 'Active'}')" title="View Details"><i class="fa-solid fa-eye"></i></button>
+                        </td>
+                </tr>`;
+        });
+        
+        document.getElementById('user-list').innerHTML = html || '<tr><td colspan="5" style="text-align:center;">No users found.</td></tr>';
+        
+        // UPDATE LIVE STAT CARDS
+        document.getElementById('stat-total').innerText = totalCount;
+        document.getElementById('stat-active').innerText = activeCount;
+        document.getElementById('stat-banned').innerText = bannedCount;
+    });
+
+    window.adjustWallet = async (uid, action) => {
+        const amtStr = prompt(`Enter amount to ${action === 'add' ? 'ADD to' : 'DEDUCT from'} wallet:`);
+        if(!amtStr) return;
+        const amt = Number(amtStr);
+        if(isNaN(amt) || amt <= 0) return alert("Invalid amount.");
+
+        try {
+            const incrementValue = action === 'add' ? amt : -amt;
+            await updateDoc(doc(db, "users", uid), { balance: increment(incrementValue) });
+            alert(`Successfully ${action === 'add' ? 'added' : 'deducted'} ₹${amt}.`);
+        } catch(e) { alert("Error: " + e.message); }
+    };
+
+    window.toggleBan = async (uid, currentlyBanned) => {
+        if(!confirm(`Are you sure you want to ${currentlyBanned ? 'UNBAN' : 'BAN'} this player?`)) return;
+        try {
+            await updateDoc(doc(db, "users", uid), { isBanned: !currentlyBanned });
+        } catch(e) { alert("Error: " + e.message); }
+    };
+
+    window.deleteUser = async (uid) => {
+        if(!confirm("Are you sure you want to delete this user permanently? This action cannot be undone!")) return;
+        try {
+            await deleteDoc(doc(db, "users", uid));
+            alert("User deleted successfully from the database!");
+        } catch(e) { alert("Error: " + e.message); }
+    };
+
+</script>
+</body>
+</html>
